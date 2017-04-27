@@ -14,10 +14,10 @@ Rio de Janeiro, Brasil
 
 Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários, seja através da api do Google ou de submissões na plataforma. Devido a esse fato, tais dados podem sofrer diferentes problemas, desde sua formatação incorreta, erros de grafia ou falta de padronização de dados. Após uma breve análise do arquivo XML, os principais problemas encontrados no mapa foram:
 
-* <b> Números de telefone preenchidos sem um padrão </b>:
+* **Números de telefone preenchidos sem um padrão**:
     Muitos dados são gravados sem a utilização de uma máscara padrão para os números. Alguns usuários colocam o prefixo do país (*+55*), enquanto outros não; há também ocorrência onde o usuário coloca ou não *"-"* dividindo o número; além de situações onde é utilizado parênteses para encapsular o DDD.
 
-    Para resolver esse problema criei uma função em Python que formata e limpa esse dado, de forma que encapsule o DDD entre parênteses, e que separe o número por dígitos (*-*).
+    Para resolver esse problema criei uma função em Python que formata e limpa esse dado, de forma que encapsule o DDD entre parênteses, e que separe o número por dígitos (*-*):
 
     ```python
     for elem in root.iter('tag'):
@@ -39,4 +39,14 @@ Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários,
             #Formatando número do telefone
             if not '0800' in elem.attrib['v'][:4]:
                 elem.attrib['v'] = '{} {}-{}'.format(elem.attrib['v'][:2], elem.attrib['v'][2:6], elem.attrib['v'][6:10])
-    ```    
+    ```
+* **Logradouros informados incorretamente**:
+    Há ocorrência de muitos endereços com nomes abreviados na `tag[k: addr:street]`, como *av* para *Avenida* e *est.* para *Estrada*, dentre outros. A função realizou uma iteração por todas as tags do arquivo e procura de valores incorretos para correção.
+
+    *Exempo de dados encontrados*:
+    ```XML
+    <tag k="addr:street" v="av Costa Azul"/>
+    <tag k="addr:street" v="av Amazonas"/>
+    <tag k="addr:street" v="Est. Profº Leandro Faria Sarzedas"/>
+
+    ```
