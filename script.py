@@ -4,6 +4,11 @@ import xml.etree.cElementTree as ET
 from num2words import num2words #para converter numeros para extenso
 import sqlite3
 from collections import OrderedDict
+from zipfile import ZipFile as zf
+
+#Extraindo dados
+with zf('map.zip', 'r') as arquivo_zip:
+    arquivo_zip.extractall()
 
 #Leitura do arquivo
 print('Carregando dados')
