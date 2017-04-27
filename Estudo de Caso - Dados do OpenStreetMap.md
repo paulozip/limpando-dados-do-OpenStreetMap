@@ -43,10 +43,22 @@ Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários,
 * **Logradouros informados incorretamente**:
     Há ocorrência de muitos endereços com nomes abreviados na `tag[k: addr:street]`, como *av* para *Avenida* e *est.* para *Estrada*, dentre outros. A função realizou uma iteração por todas as tags do arquivo e procura de valores incorretos para correção.
 
-    *Exempo de dados encontrados*:
+    *Exemplo de dados encontrados*:
     ```XML
     <tag k="addr:street" v="av Costa Azul"/>
     <tag k="addr:street" v="av Amazonas"/>
     <tag k="addr:street" v="Est. Profº Leandro Faria Sarzedas"/>
 
     ```
+
+* **CEPs indevidos**:
+    Assim como os números de telefone, códigos de CEP são informados sem uma máscara que facilitaria a leitura. Utilizando a função `verifica_cep()`,eu realizo a limpeza desses dados e adiciono o dígito *-* para separar os três últimos números.
+
+    *Diferentes tipos de CEP encontrados*
+    ```XML
+    <tag k="postal_code" v="25900213"/>
+    <tag k="postal_code" v="24030-128"/>    
+    ```
+
+* **Números inteiros e por extenso**
+    Em alguns casos pude perceber que quando há um número no endereço da `<tag k="addr:street"...>`,
