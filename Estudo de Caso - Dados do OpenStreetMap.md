@@ -90,33 +90,33 @@ ways_tags.csv ---------------------------------   3.5 MB
 
 ### Número de usuários únicos
 
-[In]
-`select COUNT(DISTINCT uid) as Contagem from ways`
+```SQL
+select COUNT(DISTINCT uid) as Contagem from ways
+``` 
 
-[Out] 
 ```
 Contagem
 364
 ```
 
 ### Usuários que mais contribuiram
-[In]
-```
-select user as usuario, count(uid) as Contribuicoes from ways
+
+```SQL
+select user as Usuario, count(uid) as Contribuicoes from ways
 group by usuario
 order by Contribuicoes DESC
 limit 10
 ```
-[Out]
+
 ```
-Thundercel         | 11169
-Alexandrecw	       |  9185
-Helio Coutinho	   |  8594
-felipeacsi	       |  2701
-ftrebien	       |  1882
-Skippern	       |  1821
-Ricardo Mitidieri  |  1512
-Wallace Silva	   |  1403
-patodiez	       |  1213
-ThiagoPv	       |  1210
+Thundercel          | 11169
+Alexandrecw         |  9185
+Helio Coutinho      |  8594
+felipeacsi          |  2701
+ftrebien            |  1882
+Skippern            |  1821
+Ricardo Mitidieri   |  1512
+Wallace Silva       |  1403
+patodiez            |  1213
+ThiagoPv            |  1210
 ```
