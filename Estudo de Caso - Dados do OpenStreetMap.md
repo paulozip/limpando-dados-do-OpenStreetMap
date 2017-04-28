@@ -4,7 +4,7 @@
 
 Este projeto tem como objetivo documentar o processo de limpeza de dados do OpenStreetMap. Além das dificuldades encontradas para alcançar tal objetivo, viso através deste documento salientar as ações realizadas para garantir a validade, a precisão, a completude, consistência e uniformidade dos dados do OpenStreetMap.
 
-Utilizei de um mapa de uma área do Rio de Janeiro, cobrindo em sua totalidade toda a localidade chamada de Região dos Lagos, onde moro atualmente.
+Utilizei de um mapa de uma área do Rio de Janeiro, cobrindo em sua maioria toda a localidade chamada de Região dos Lagos, onde moro atualmente.
 
 Rio de Janeiro, Brasil 
 - [https://www.openstreetmap.org/export#map=9/-22.7091/-42.4841]
@@ -12,12 +12,12 @@ Rio de Janeiro, Brasil
 
 ## Desafios encontrados
 
-Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários, seja através da api do Google ou de submissões na plataforma. Devido a esse fato, tais dados podem sofrer diferentes problemas, desde sua formatação incorreta, erros de grafia ou falta de padronização de dados. Após uma breve análise do arquivo XML, os principais problemas encontrados no mapa foram:
+Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários, seja através da api do Google ou de submissões na plataforma. Devido a esse fato, é fatídico que tais dados sofram diferentes problemas, desde sua formatação incorreta e erros de grafia até a falta de padronização de dados. Após uma análise no arquivo XML, os principais problemas encontrados no mapa foram:
 
 * **Números de telefone preenchidos sem um padrão**:
-    Muitos dados são gravados sem a utilização de uma máscara padrão para os números. Alguns usuários colocam o prefixo do país (*+55*), enquanto outros não; há também ocorrência onde o usuário coloca ou não *"-"* dividindo o número; além de situações onde é utilizado parênteses para encapsular o DDD.
+    Muitos dados são gravados sem a utilização de uma máscara padrão para os números. Alguns usuários colocam o prefixo do país (*+55*), enquanto outros não; há também ocorrências onde o usuário coloca ou não *"-"* dividindo o número; além de situações onde é utilizado ou não parênteses para encapsular o DDD.
 
-    Para resolver esse problema criei uma função em Python que formata e limpa esse dado, de forma que encapsule o DDD entre parênteses, e que separe o número por dígitos (*-*):
+    Para resolver esse problema criei a função `limpa_telefone()` em Python que formata e limpa esse dado, de forma que separe o DDD e o número por dígitos (*-*):
 
     ```python
     for elem in root.iter('tag'):
@@ -41,7 +41,7 @@ Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários,
                 elem.attrib['v'] = '{} {}-{}'.format(elem.attrib['v'][:2], elem.attrib['v'][2:6], elem.attrib['v'][6:10])
     ```
 * **Logradouros informados incorretamente**:
-    Há ocorrência de muitos endereços com nomes abreviados na `tag[k: addr:street]`, como *av* para *Avenida* e *est.* para *Estrada*, dentre outros. A função realizou uma iteração por todas as tags do arquivo e procura de valores incorretos para correção.
+    Há ocorrência de muitos endereços com nomes abreviados na `tag[k: addr:street]`, como *av* para *Avenida*, *est.* para *Estrada*, dentre outros. A função realizou uma iteração por todas as tags do arquivo a procura de valores incorretos para correção.
 
     *Exemplo de dados encontrados*:
     ```XML
@@ -52,7 +52,7 @@ Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários,
     ```
 
 * **CEPs indevidos**:
-    Assim como os números de telefone, códigos de CEP são informados sem uma máscara que facilitaria a leitura. Utilizando a função `verifica_cep()`,eu realizo a limpeza desses dados e adiciono o dígito *-* para separar os três últimos números.
+    Assim como os números de telefone, códigos de CEP são informados sem uma máscara que facilitaria a leitura. Utilizando a função `verifica_cep()`, eu realizo a limpeza desses dados e adiciono o dígito *-* para separar os três últimos números.
 
     *Diferentes tipos de CEP encontrados*:
     ```XML
@@ -61,15 +61,15 @@ Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários,
     ```
 
 * **Números inteiros e por extenso**:
-    Em alguns casos pude perceber que quando há um número no endereço da `<tag k="addr:street"...>` ele surge de duas formas: em sua foram inteira (*1, 10, 42*); e por extenso (*Um, Dez, Quarenta e Dois*). Para alinhar esses dados e criar um padrão de preechimento, eu desenvolvi a função `numero_em_extenso()`, que passa por todo o arquivo procurando por números nos endereços dos nodes.
+    Em alguns casos pude perceber que quando há um número no endereço da `<tag k="addr:street"...>` ele surge de duas formas: inteira (*1, 10, 42*); e por extenso (*Um, Dez, Quarenta e Dois*). Para alinhar esses dados e criar um padrão de preechimento, eu desenvolvi a função `numero_em_extenso()`, que passa por todo o arquivo procurando por números nos endereços dos nodes.
 
 # Geração e importação dos dados
 
 Todo o processo de geração e importação dos dados foi feita de forma programática. Durante a concepção do código, me vi na seguinte incógnita: insiro os dados diretamente no banco através do *script*, ou gero arquivos .csv para importação?
 
-Decidi, por fim, fazer os dois. O *script* realiza através da função `importa_dados()` a importação de todos os dados para cada tabela do banco de dados. Não obstante, também gerei arquivos .csv utilizando a função `cria_dados()`, a fim de facilitar a importação por pessoas que se interessem pelos dados. Imagine, por exemplo, que um interessado possui um ambiente SQL configurado em seu computador, mas não dispõe de instalação Python ou de suas bibliotecas. Os arquivos .csv economizaram uma quantidade exponencial de tempo.
+Decidi, por fim, fazer os dois. O *script* realiza, através da função `importa_dados()`, a importação de todos os dados para cada tabela do banco de dados. Não obstante, também gerei arquivos .csv utilizando a função `cria_dados()`, a fim de facilitar a importação por pessoas que se interessem pelos dados. Imagine, por exemplo, que um interessado possui um ambiente SQL configurado em seu computador, mas não dispõe de Python ou de suas bibliotecas. Os arquivos .csv economizaram uma quantidade exponencial de tempo.
 
-Além disso, o script também cria todo o schema de tabelas no banco de dados utilizando a função `cria_tabelas()`, sempre levando em consideração a praticidade para aqueles que dispõe de todos os *dependencies* em seu ambiente de trabalho.
+Além disso, o *script* também cria todo o *schema* de tabelas no banco de dados utilizando a função `cria_tabelas()`, sempre levando em consideração a praticidade para aqueles que dispõe de todos os *dependencies* em seu ambiente de trabalho.
 
 ## Tamanho dos dados
 
@@ -121,7 +121,7 @@ Contagem
 364
 ```
 
-### Usuários que mais contribuiram
+### Top 10 Usuários que mais contribuiram
 
 ```SQL
 select user as Usuario, count(uid) as Contribuicoes from ways
@@ -143,7 +143,9 @@ patodiez            |  1213
 ThiagoPv            |  1210
 ```
 
-### Quantidade de acessos a cadeira de rodas
+### Quantidade de acessos por cadeira de rodas
+
+Claro que há mais lugares que são acessíveis por cadeira de rodas, como calçadas e vias, mas o OpenStreetMap considera apenas locais que informam tal acesso, como rampas de shoppings e galerias.
 
 ```SQL
 select count(*) as Acessos_cadeira_de_rodas from nodes_tags
@@ -157,7 +159,7 @@ Acessos_cadeira_de_rodas
 22
 ```
 
-### Top 3 tipos de lugares encontrados no mapa
+### Top 3 tipos de lugares mais encontrados no mapa
 ```SQL
 select value, count(*) as Total
 FROM (select * from ways_tags
@@ -175,12 +177,12 @@ island      |	24
 
 # Melhorias sugeridas
 
-O OpenStreetMap ainda é algo novo, principalmente no Brasil. Os dados tem sido atualizados e inseridos a medida que os esforços de nossos usuários aumenta. Infelizmente, muitos fatores que podemos encontrar nesse mapa necessitam de uma atenção a mais.
+O OpenStreetMap ainda é algo novo, principalmente no Brasil. Os dados tem sido atualizados e inseridos a medida que os esforços de nossos usuários aumentam. Infelizmente, muitos fatores que podemos encontrar nesse mapa necessitam de uma atenção a mais.
 
-Por exemplo, valores sobre pontos chaves encontrados no mapa, como *island* para ilha, ou *place_of_worship* para igrejas e santuários podem causar dúvidas em usuários não falantes de inglês, principalmente quando estes dados são relatados em documentos.
+Por exemplo, valores sobre pontos chaves encontrados no mapa, como *island* para ilha, ou *place_of_worship* para igrejas e santuários podem causar dúvidas em usuários não falantes de inglês, principalmente quando estes dados são relatados em um documento como este.
 
-Uma medida para resolver esse problema seria integrar dados encontrados nos atributos `value` das tags de caminhos (*ways_tags*) com API's como do Google, onde palavras chaves como *island*, *traffic_signal* ou *bank* são traduzidas facilmente. Isso faria os dados encontrados neste *database* serem mais fieis a língua e cultura brasileira.
+Uma medida para resolver esse problema seria integrar dados encontrados nos atributos `value` das tags de caminhos (*ways_tags*) com API's como do Google, onde palavras chaves como *island*, *traffic_signal* ou *bank* seriam traduzidas facilmente. Isso faria com que os dados encontrados neste *database* fossem mais fieis a língua e cultura brasileira.
 
 # Conclusão
 
-A proposta encontada no OpenStreetMap nos permite ilimitadas formas de utilizar seus dados. Seja para estratégia de mercado (pesquisa de locais com poucas farmácias para abertura de uma nova filial) ou para mapeamento e construção de poderosos databases, o OPS é um prato cheio. Nós, como brasileiros e usuários da plataforma, devemos manter sempre ativo a necessidade de manipular, fiscalizar e corrigir os dados encontrados na plataforma, a fim de construir uma base robusta, permitindo a qualquer um utilizar suas informações para atingir um objetivo, seja este corporativa ou por simples hobby.
+A proposta do OpenStreetMap nos permite ilimitadas aplicações dos seus dados. Seja para estratégia de mercado (por exemplo, pesquisar por locais com poucas farmácias para abertura de uma nova filial) ou para mapeamento e construção de poderosos *databases*, o OPS é um prato cheio. Nós, como brasileiros e usuários da plataforma, devemos manter sempre ativa a necessidade de manipular, fiscalizar e corrigir os dados encontrados ali, a fim de construir uma base robusta, permitindo a qualquer um utilizar suas informações para atingir um objetivo, seja este corporativo ou por simples *hobby*.
