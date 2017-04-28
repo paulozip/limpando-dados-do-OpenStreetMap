@@ -88,6 +88,28 @@ ways_tags.csv ---------------------------------   3.5 MB
 
 # Consulta de dados
 
+### Quantidade total de nós (*nodes*)
+
+```SQL
+select count(*) as Total from nodes
+```
+
+```
+Total
+636891
+```
+
+### Quantidade total de caminhos (*ways*)
+
+```SQL
+select count(*) as Total from ways
+```
+
+```
+Total
+57822
+```
+
 ### Número de usuários únicos
 
 ```SQL
@@ -119,4 +141,18 @@ Ricardo Mitidieri   |  1512
 Wallace Silva       |  1403
 patodiez            |  1213
 ThiagoPv            |  1210
+```
+
+## Quantidade de acessos a cadeira de rodas
+
+```SQL
+select count(*) as Acessos_cadeira_de_rodas from nodes_tags
+where key = 'wheelchair'
+AND value = 'yes'
+or value = 'limited'
+```
+
+```
+Acessos_cadeira_de_rodas
+22
 ```
