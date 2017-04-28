@@ -143,7 +143,7 @@ patodiez            |  1213
 ThiagoPv            |  1210
 ```
 
-## Quantidade de acessos a cadeira de rodas
+### Quantidade de acessos a cadeira de rodas
 
 ```SQL
 select count(*) as Acessos_cadeira_de_rodas from nodes_tags
@@ -157,7 +157,7 @@ Acessos_cadeira_de_rodas
 22
 ```
 
-## Top 3 tipos de lugares encontrados no mapa
+### Top 3 tipos de lugares encontrados no mapa
 ```SQL
 select value, count(*) as Total
 FROM (select * from ways_tags
@@ -172,3 +172,15 @@ city_block  |	71
 islet       |	68
 island      |	24
 ```
+
+# Melhorias sugeridas
+
+O OpenStreetMap ainda é algo novo, principalmente no Brasil. Os dados tem sido atualizados e inseridos a medida que os esforços de nossos usuários aumenta. Infelizmente, muitos fatores que podemos encontrar nesse mapa necessitam de uma atenção a mais.
+
+Por exemplo, valores sobre pontos chaves encontrados no mapa, como *island* para ilha, ou *place_of_worship* para igrejas e santuários podem causar dúvidas em usuários não falantes de inglês, principalmente quando estes dados são relatados em documentos.
+
+Uma medida para resolver esse problema seria integrar dados encontrados nos atributos `value` das tags de caminhos (*ways_tags*) com API's como do Google, onde palavras chaves como *island*, *traffic_signal* ou *bank* são traduzidas facilmente. Isso faria os dados encontrados neste *database* serem mais fieis a língua e cultura brasileira.
+
+# Conclusão
+
+A proposta encontada no OpenStreetMap nos permite ilimitadas formas de utilizar seus dados. Seja para estratégia de mercado (pesquisa de locais com poucas farmácias para abertura de uma nova filial) ou para mapeamento e construção de poderosos databases, o OPS é um prato cheio. Nós, como brasileiros e usuários da plataforma, devemos manter sempre ativo a necessidade de manipular, fiscalizar e corrigir os dados encontrados na plataforma, a fim de construir uma base robusta, permitindo a qualquer um utilizar suas informações para atingir um objetivo, seja este corporativa ou por simples hobby.
