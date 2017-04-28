@@ -54,11 +54,36 @@ Os dados encontrados no OpenStreetMap são gerados por seus próprios usuários,
 * **CEPs indevidos**:
     Assim como os números de telefone, códigos de CEP são informados sem uma máscara que facilitaria a leitura. Utilizando a função `verifica_cep()`,eu realizo a limpeza desses dados e adiciono o dígito *-* para separar os três últimos números.
 
-    *Diferentes tipos de CEP encontrados*
+    *Diferentes tipos de CEP encontrados*:
     ```XML
     <tag k="postal_code" v="25900213"/>
     <tag k="postal_code" v="24030-128"/>    
     ```
 
-* **Números inteiros e por extenso**
-    Em alguns casos pude perceber que quando há um número no endereço da `<tag k="addr:street"...>`,
+* **Números inteiros e por extenso**:
+    Em alguns casos pude perceber que quando há um número no endereço da `<tag k="addr:street"...>` ele surge de duas formas: em sua foram inteira (*1, 10, 42*); e por extenso (*Um, Dez, Quarenta e Dois*). Para alinhar esses dados e criar um padrão de preechimento, eu desenvolvi a função `numero_em_extenso()`, que passa por todo o arquivo procurando por números nos endereços dos nodes.
+
+# Geração e importação dos dados
+
+Todo o processo de geração e importação dos dados foi feita de forma programática. Durante a concepção do código, me vi na seguinte incógnita: insiro os dados diretamente no banco através do *script*, ou gero arquivos .csv para importação?
+
+Decidi, por fim, fazer os dois. O *script* realiza através da função `importa_dados()` a importação de todos os dados para cada tabela do banco de dados. Não obstante, também gerei arquivos .csv utilizando a função `cria_dados()`, a fim de facilitar a importação por pessoas que se interessem pelos dados. Imagine, por exemplo, que um interessado possui um ambiente SQL configurado em seu computador, mas não dispõe de instalação Python ou de suas bibliotecas. Os arquivos .csv economizaram uma quantidade exponencial de tempo.
+
+Além disso, o script também cria todo o schema de tabelas no banco de dados utilizando a função `cria_tabelas()`, sempre levando em consideração a praticidade para aqueles que dispõe de todos os *dependencies* em seu ambiente de trabalho.
+
+## Tamanho dos dados
+
+Abaixo você pode conferir informações sobre todos os arquivos convenientes disponíveis neste repositório:
+
+```
+mapa.osm (comprimido) -------------------------  10.2 MB
+mapa.osm (descomprimido) ---------------------- 133.9 MB
+Araruama.db -----------------------------------  68.9 MB
+nodes.csv -------------------------------------  54.4 MB
+nodes_tags.csv --------------------------------   582 KB
+ways.csv --------------------------------------   3.5 MB
+ways_nodes.csv --------------------------------  18.7 MB
+ways_tags.csv ---------------------------------   3.5 MB
+```
+
+# Consulta de dados
