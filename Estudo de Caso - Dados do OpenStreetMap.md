@@ -156,3 +156,19 @@ or value = 'limited'
 Acessos_cadeira_de_rodas
 22
 ```
+
+## Top 3 tipos de lugares encontrados no mapa
+```SQL
+select value, count(*) as Total
+FROM (select * from ways_tags
+where key = 'place') lugares
+group by value
+order by Total DESC
+limit 3
+```
+
+```
+city_block  |	71
+islet       |	68
+island      |	24
+```
