@@ -150,8 +150,7 @@ Claro que há mais lugares que são acessíveis por cadeira de rodas, como calç
 ```SQL
 select count(*) as Acessos_cadeira_de_rodas from nodes_tags
 where key = 'wheelchair'
-AND value = 'yes'
-or value = 'limited'
+AND (value = 'yes' or value = 'limited')
 ```
 
 ```
